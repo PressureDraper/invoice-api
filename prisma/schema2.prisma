@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model cat_proveedores {
+  id           Int                     @id @default(autoincrement()) @db.UnsignedInt
+  rfc          String
+  nombre       String?
+  domicilio    String?
+  noexterior   String?
+  nointerior   String?
+  colonia      String?
+  ciudad       String?
+  estado       String?
+  pais         String?
+  cp           String?
+  localidad    String?
+  condpago     String?
+  telefono     String?
+  cuentad      String?
+  cuentah      String?
+  ivad         String?
+  ivah         String?
+  estatus      cat_proveedores_estatus @default(Activo)
+  curp         String?
+  created_at   DateTime?               @db.Timestamp(0)
+  updated_at   DateTime?               @db.Timestamp(0)
+  deleted_at   DateTime?               @db.Timestamp(0)
+  clabe        String?                 @db.Text
+  rfn_facturas rfn_facturas[]
+}
+
+
+
+model rfn_factura_detalles {
+  id               BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  noidentificacion String?
+  cantidad         Int
+  unidad           String
+  descripcion      String       @db.Text
+  valor_unitario   Decimal      @default(0.00) @db.Decimal(10, 2)
+  importe          Decimal      @default(0.00) @db.Decimal(10, 2)
+  id_factura       BigInt       @db.UnsignedBigInt
+  id_partida       BigInt?      @db.UnsignedBigInt
+  created_at       DateTime?    @db.Timestamp(0)
+  updated_at       DateTime?    @db.Timestamp(0)
+  deleted_at       DateTime?    @db.Timestamp(0)
+  rfn_facturas     rfn_facturas @relation(fields: [id_factura], references: [id], onUpdate: Restrict)
+  cat_partidas     cat_partidas? @relation(fields: [id_partida], references: [id], onUpdate: Restrict)
+  
+  rfn_factura_traslados rfn_factura_traslados[]
+}
+
+model rfn_factura_impuestos {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  importe    Decimal   @default(0.00) @db.Decimal(10, 2)
+  tasa       Int?
+  tipofactor String?
+  impuestos  String?
+  id_factura BigInt    @db.UnsignedBigInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  rfn_facturas rfn_facturas? @relation(fields: [id_factura], references: [id], onUpdate: Restrict)
+}
+
+model rfn_factura_pagos {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  id_factura BigInt    @db.UnsignedBigInt
+  pago       Decimal   @default(0.00) @db.Decimal(10, 2)
+  fecha_pago DateTime  @db.DateTime(0)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  rfn_facturas     rfn_facturas @relation(fields: [id_factura], references: [id], onUpdate: Restrict)
+}
+
+model rfn_factura_traslados {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  id_detalle BigInt?
+  base       Decimal   @default(0.00) @db.Decimal(10, 2)
+  impuesto   String?
+  tipofactor String?
+  tasaocuota Decimal   @default(0.00) @db.Decimal(10, 2)
+  importe    Decimal   @default(0.00) @db.Decimal(10, 2)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  rfn_factura_detalles     rfn_factura_detalles? @relation(fields: [id_detalle], references: [id], onUpdate: Restrict)
+}
+
+model rfn_facturas {
+  id                     BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  factura_numero         String?
+  folio                  String
+  gasto                  String?
+  recibida               DateTime? @db.DateTime(0)
+  contabilidad           DateTime? @db.Date
+  fecha_factura          DateTime? @db.DateTime(0)
+  fecha_vencimiento      DateTime? @db.Date
+  fecha_entrega_original DateTime? @db.Date
+  nocertificado          String?
+  certificado            String?   @db.Text
+  sello                  String?   @db.Text
+  lugarexpedicion        String?
+  metododepago           String?
+  formadepago            String?
+  tipocambio             String?
+  moneda                 String?
+  total                  Decimal   @db.Decimal(10, 2)
+  subtotal               Decimal   @db.Decimal(10, 2)
+  serie                  String?
+  folio_xml              String?
+  tipodecomprobante      String?
+  fecha                  String?
+  version                String?
+  condicionesdepago      String?
+  descuento              Decimal   @db.Decimal(10, 2)
+  impuestos              Decimal?  @db.Decimal(10, 2)
+  uuid                   String?
+  fechatimbrado          String?
+  sellocfd               String?   @db.Text
+  nocertificadosat       String?
+  selloSAT               String?   @db.Text
+  rfcprovcertif          String?
+  path_xml               String?
+  bandera_valida         String
+  bandera_pagada         String
+  nota_credito_fiscal    String
+  nota_credito_interna   String
+  bandera_clasificacion  String
+  cancelado              String?   @db.Text
+  id_pedido              BigInt    @db.UnsignedBigInt
+  id_proveedor           Int?      @db.UnsignedInt @unique
+  created_at             DateTime? @db.Timestamp(0)
+  updated_at             DateTime? @db.Timestamp(0)
+  deleted_at             DateTime? @db.Timestamp(0)
+  // rfn_facturas          rfn_facturas[]
+
+  rfn_factura_detalles rfn_factura_detalles[]
+  rfn_factura_pagos   rfn_factura_pagos[]
+  cat_proveedores cat_proveedores? @relation(fields: [id_proveedor], references: [id], onUpdate: Restrict)
+  rfn_pedidos rfn_pedidos? @relation(fields: [id_pedido], references: [id], onUpdate: Restrict)
+  rfn_factura_impuestos rfn_factura_impuestos[]
+}
+
+model rfn_pedidos {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  numero     String
+  tipo       String
+  id_grupo   BigInt    @db.UnsignedBigInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  rfn_facturas rfn_facturas[]
+  rfn_pedidos_detalles rfn_pedidos_detalles[]
+  cat_pedido_grupo cat_pedido_grupo? @relation(fields: [id_grupo], references: [id], onUpdate: Restrict)
+}
+
+model rfn_pedidos_detalles {
+  id         BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  importe    Decimal   @default(0.00) @db.Decimal(10, 2)
+  id_clave   BigInt    @db.UnsignedBigInt
+  id_pedido  BigInt    @db.UnsignedBigInt
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  rfn_pedidos rfn_pedidos? @relation(fields: [id_pedido], references: [id], onUpdate: Restrict)
+
+}
+
+model cat_partidas {
+  id         BigInt       @id @default(autoincrement())
+  codigo     Int
+  nombre     String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  rfn_factura_detalles rfn_factura_detalles[]
+}
+
+model cat_pedido_grupo {
+  id         BigInt       @id @default(autoincrement())
+  clave      String    @db.VarChar(255)
+  nombre     String    @db.VarChar(255)
+  created_at DateTime? @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+  rfn_pedidos rfn_pedidos[]
+}
+
+
+enum cat_proveedores_estatus {
+  Activo
+  Inactivo
+}
