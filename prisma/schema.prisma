@@ -28,8 +28,8 @@ model cat_proveedores {
   ivah         String?
   estatus      cat_proveedores_estatus @default(Activo)
   curp         String?
-  created_at   DateTime?               @db.Timestamp(0)
-  updated_at   DateTime?               @db.Timestamp(0)
+  created_at   DateTime?               @db.Timestamp(0) @default(now())
+  updated_at   DateTime?               @db.Timestamp(0) @default(now())
   deleted_at   DateTime?               @db.Timestamp(0)
   clabe        String?                 @db.Text
   rfn_facturas rfn_facturas[]
@@ -47,8 +47,8 @@ model rfn_factura_detalles {
   importe          Decimal      @default(0.00) @db.Decimal(10, 2)
   id_factura       BigInt       @db.UnsignedBigInt
   id_partida       BigInt?
-  created_at       DateTime?    @db.Timestamp(0)
-  updated_at       DateTime?    @db.Timestamp(0)
+  created_at       DateTime?    @db.Timestamp(0) @default(now())
+  updated_at       DateTime?    @db.Timestamp(0) @default(now())
   deleted_at       DateTime?    @db.Timestamp(0)
   rfn_facturas     rfn_facturas @relation(fields: [id_factura], references: [id], onUpdate: Restrict)
   cat_partidas     cat_partidas? @relation(fields: [id_partida], references: [id], onUpdate: Restrict)
@@ -63,8 +63,8 @@ model rfn_factura_impuestos {
   tipofactor String?
   impuestos  String?
   id_factura BigInt    @db.UnsignedBigInt
-  created_at DateTime? @db.Timestamp(0)
-  updated_at DateTime? @db.Timestamp(0)
+  created_at DateTime? @db.Timestamp(0) @default(now())
+  updated_at DateTime? @db.Timestamp(0) @default(now())
   deleted_at DateTime? @db.Timestamp(0)
   rfn_facturas rfn_facturas? @relation(fields: [id_factura], references: [id], onUpdate: Restrict)
 }
@@ -74,8 +74,8 @@ model rfn_factura_pagos {
   id_factura BigInt    @db.UnsignedBigInt
   pago       Decimal   @default(0.00) @db.Decimal(10, 2)
   fecha_pago DateTime  @db.DateTime(0)
-  created_at DateTime? @db.Timestamp(0)
-  updated_at DateTime? @db.Timestamp(0)
+  created_at DateTime? @db.Timestamp(0) @default(now())
+  updated_at DateTime? @db.Timestamp(0) @default(now())
   deleted_at DateTime? @db.Timestamp(0)
   rfn_facturas     rfn_facturas @relation(fields: [id_factura], references: [id], onUpdate: Restrict)
 }
@@ -88,8 +88,8 @@ model rfn_factura_traslados {
   tipofactor String?
   tasaocuota Decimal   @default(0.00) @db.Decimal(10, 2)
   importe    Decimal   @default(0.00) @db.Decimal(10, 2)
-  created_at DateTime? @db.Timestamp(0)
-  updated_at DateTime? @db.Timestamp(0)
+  created_at DateTime? @db.Timestamp(0) @default(now())
+  updated_at DateTime? @db.Timestamp(0) @default(now())
   deleted_at DateTime? @db.Timestamp(0)
   rfn_factura_detalles     rfn_factura_detalles? @relation(fields: [id_detalle], references: [id], onUpdate: Restrict)
 }
@@ -137,8 +137,8 @@ model rfn_facturas {
   cancelado              String?   @db.Text
   id_pedido              BigInt    @db.UnsignedBigInt
   id_proveedor           Int?      @db.UnsignedInt
-  created_at             DateTime? @db.Timestamp(0)
-  updated_at             DateTime? @db.Timestamp(0)
+  created_at             DateTime? @db.Timestamp(0) @default(now())
+  updated_at             DateTime? @db.Timestamp(0) @default(now())
   deleted_at             DateTime? @db.Timestamp(0)
   // rfn_facturas          rfn_facturas[]
 
@@ -154,8 +154,8 @@ model rfn_pedidos {
   numero     String
   tipo       String
   id_grupo   BigInt
-  created_at DateTime? @db.Timestamp(0)
-  updated_at DateTime? @db.Timestamp(0)
+  created_at DateTime? @db.Timestamp(0) @default(now())
+  updated_at DateTime? @db.Timestamp(0) @default(now())
   deleted_at DateTime? @db.Timestamp(0)
   rfn_facturas rfn_facturas[]
   rfn_pedidos_detalles rfn_pedidos_detalles[]
@@ -167,8 +167,8 @@ model rfn_pedidos_detalles {
   importe    Decimal   @default(0.00) @db.Decimal(10, 2)
   id_clave   BigInt    @db.UnsignedBigInt
   id_pedido  BigInt    @db.UnsignedBigInt
-  created_at DateTime? @db.Timestamp(0)
-  updated_at DateTime? @db.Timestamp(0)
+  created_at DateTime? @db.Timestamp(0) @default(now())
+  updated_at DateTime? @db.Timestamp(0) @default(now())
   deleted_at DateTime? @db.Timestamp(0)
   rfn_pedidos rfn_pedidos? @relation(fields: [id_pedido], references: [id], onUpdate: Restrict)
 
@@ -178,8 +178,8 @@ model cat_partidas {
   id         BigInt       @id @default(autoincrement())
   codigo     Int
   nombre     String    @db.VarChar(255)
-  created_at DateTime? @db.Timestamp(0)
-  updated_at DateTime? @db.Timestamp(0)
+  created_at DateTime? @db.Timestamp(0) @default(now())
+  updated_at DateTime? @db.Timestamp(0) @default(now())
   deleted_at DateTime? @db.Timestamp(0)
   rfn_factura_detalles rfn_factura_detalles[]
 }
@@ -188,8 +188,8 @@ model cat_pedido_grupo {
   id         BigInt       @id @default(autoincrement())
   clave      String    @db.VarChar(255)
   nombre     String    @db.VarChar(255)
-  created_at DateTime? @db.Timestamp(0)
-  updated_at DateTime? @db.Timestamp(0)
+  created_at DateTime? @db.Timestamp(0) @default(now())
+  updated_at DateTime? @db.Timestamp(0) @default(now())
   deleted_at DateTime? @db.Timestamp(0)
   rfn_pedidos rfn_pedidos[]
 }

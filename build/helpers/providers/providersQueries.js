@@ -9,12 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTotalProviers = exports.getProvidersQuery = void 0;
+exports.deleteProviderQuery = exports.createProviderQuery = exports.updateProviderQuery = exports.getTotalProviers = exports.getProvidersQuery = void 0;
 const db_1 = require("../../utils/db");
 const getProvidersQuery = ({ page = '0', limit = '10', rfcFilter = '', nameFilter = '', clabeFilter = '' }) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            console.log(page, limit);
             const rowsPerPage = parseInt(limit);
             const min = ((parseInt(page) + 1) * rowsPerPage) - rowsPerPage;
             let listProviders = yield db_1.db.cat_proveedores.findMany({
@@ -27,7 +26,8 @@ const getProvidersQuery = ({ page = '0', limit = '10', rfcFilter = '', nameFilte
                     },
                     clabe: {
                         contains: clabeFilter
-                    }
+                    },
+                    estatus: 'Activo'
                 },
                 select: {
                     id: true,
@@ -38,7 +38,7 @@ const getProvidersQuery = ({ page = '0', limit = '10', rfcFilter = '', nameFilte
                     created_at: true
                 },
                 orderBy: {
-                    created_at: 'desc'
+                    id: 'desc'
                 },
                 skip: min,
                 take: rowsPerPage,
@@ -65,7 +65,8 @@ const getTotalProviers = ({ rfcFilter = '', nameFilter = '', clabeFilter = '' })
                     },
                     clabe: {
                         contains: clabeFilter
-                    }
+                    },
+                    estatus: 'Activo'
                 },
             });
             resolve(countListProviders);
@@ -77,3 +78,78 @@ const getTotalProviers = ({ rfcFilter = '', nameFilter = '', clabeFilter = '' })
     }));
 };
 exports.getTotalProviers = getTotalProviers;
+const updateProviderQuery = ({ clabe, id_provider }) => {
+    return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            yield db_1.db.cat_proveedores.update({
+                where: {
+                    id: id_provider
+                },
+                data: {
+                    clabe,
+                }
+            });
+            resolve(true);
+        }
+        catch (err) {
+            console.log(err);
+            reject(false);
+        }
+    }));
+};
+exports.updateProviderQuery = updateProviderQuery;
+const createProviderQuery = ({ nombre, rfc, domicilio = null, noexterior = null, nointerior = null, colonia = null, ciudad = null, estado = null, pais = null, cp = null, localidad = null, condpago = null, telefono = null, cuentad = null, cuentah = null, ivad = null, curp = null, clabe = null, ivah = null }) => {
+    return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            yield db_1.db.cat_proveedores.create({
+                data: {
+                    rfc,
+                    nombre,
+                    domicilio,
+                    noexterior,
+                    nointerior,
+                    colonia,
+                    ciudad,
+                    estado,
+                    pais,
+                    cp,
+                    localidad,
+                    condpago,
+                    telefono,
+                    cuentad,
+                    cuentah,
+                    ivad,
+                    ivah,
+                    estatus: 'Activo',
+                    curp,
+                    clabe,
+                }
+            });
+            resolve(true);
+        }
+        catch (err) {
+            console.log(err);
+            reject(false);
+        }
+    }));
+};
+exports.createProviderQuery = createProviderQuery;
+const deleteProviderQuery = (id) => {
+    return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            yield db_1.db.cat_proveedores.update({
+                where: {
+                    id
+                },
+                data: {
+                    estatus: 'Inactivo'
+                }
+            });
+        }
+        catch (err) {
+            console.log(err);
+            resolve(false);
+        }
+    }));
+};
+exports.deleteProviderQuery = deleteProviderQuery;

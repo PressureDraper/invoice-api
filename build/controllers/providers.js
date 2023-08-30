@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProvidersTotal = exports.getProviders = void 0;
+exports.deleteProvider = exports.createProvider = exports.updateProvider = exports.getProvidersTotal = exports.getProviders = void 0;
 const providersQueries_1 = require("../helpers/providers/providersQueries");
 const getProviders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -49,3 +49,58 @@ const getProvidersTotal = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getProvidersTotal = getProvidersTotal;
+const updateProvider = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = parseInt(req.params.id);
+        const { clabe } = req.body;
+        yield (0, providersQueries_1.updateProviderQuery)({ id_provider: id, clabe });
+        res.status(200).json({
+            ok: true,
+            msg: 'Record Updated',
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            ok: false,
+            msg: 'Server error contact with the administrator'
+        });
+    }
+});
+exports.updateProvider = updateProvider;
+const createProvider = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        yield (0, providersQueries_1.createProviderQuery)(Object.assign({}, data));
+        res.status(200).json({
+            ok: true,
+            msg: 'Record Created',
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            ok: false,
+            msg: 'Server error contact with the administrator'
+        });
+    }
+});
+exports.createProvider = createProvider;
+const deleteProvider = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = parseInt(req.params.id);
+        yield (0, providersQueries_1.deleteProviderQuery)(id);
+        res.status(200).json({
+            ok: true,
+            msg: 'Record Deleted',
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            ok: false,
+            msg: 'Server error contact with the administrator'
+        });
+    }
+});
+exports.deleteProvider = deleteProvider;
