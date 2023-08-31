@@ -10,15 +10,9 @@ export const getProvidersQuery = ({ page = '0', limit = '10', rfcFilter = '', na
 
             let listProviders: any = await db.cat_proveedores.findMany({
                 where: {
-                    rfc: {
-                        contains: rfcFilter
-                    },
-                    nombre: {
-                        contains: nameFilter
-                    },
-                    clabe: {
-                        contains: clabeFilter
-                    },
+                    rfc: rfcFilter ? { contains: rfcFilter } : {},
+                    nombre: nameFilter ? { contains: nameFilter } : {},
+                    clabe: clabeFilter ? { contains: clabeFilter } : {},
                     estatus: 'Activo'
                 },
                 select: {
@@ -45,20 +39,15 @@ export const getProvidersQuery = ({ page = '0', limit = '10', rfcFilter = '', na
     });
 }
 
-export const getTotalProviers = ({ rfcFilter = '', nameFilter = '', clabeFilter = '' }: PropsGetTotalProvierQuery) => {
+export const getTotalProviersQuery = ({ rfcFilter = '', nameFilter = '', clabeFilter = '' }: PropsGetTotalProvierQuery) => {
     return new Promise(async (resolve, reject) => {
+        console.log( 'JEÑÑ' );
         try {
             let countListProviders = await db.cat_proveedores.count({
                 where: {
-                    rfc: {
-                        contains: rfcFilter
-                    },
-                    nombre: {
-                        contains: nameFilter
-                    },
-                    clabe: {
-                        contains: clabeFilter
-                    },
+                    rfc: rfcFilter ? { contains: rfcFilter } : {},
+                    nombre: nameFilter ? { contains: nameFilter } : {},
+                    clabe: clabeFilter ? { contains: clabeFilter } : {},
                     estatus: 'Activo'
                 },
             });
@@ -73,7 +62,7 @@ export const getTotalProviers = ({ rfcFilter = '', nameFilter = '', clabeFilter 
 
 export const updateProviderQuery = ({ clabe, id_provider }: PropsUpdateProviderQuery) => {
     return new Promise(async (resolve, reject) => {
-        try {
+        try {            
             await db.cat_proveedores.update({
                 where: {
                     id: id_provider
@@ -144,10 +133,30 @@ export const deleteProviderQuery = ( id: number ) => {
                 }
 
             } );
+            
+            resolve( true );
         }
         catch( err ) {
             console.log( err );
             resolve( false );
+        }
+    } );
+}
+
+export const getInfoProviderQuery = ( id: number ) => {
+    return new Promise( async ( resolve, reject ) => {
+        try {
+            const provider : any = await db.cat_proveedores.findUnique({
+                where: {
+                    id
+                }
+            });
+            console.log( provider );
+            resolve( provider );
+        }
+        catch( err ) {
+            console.log( err );
+            resolve( {} );
         }
     } );
 }

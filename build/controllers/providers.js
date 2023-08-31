@@ -9,8 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProvider = exports.createProvider = exports.updateProvider = exports.getProvidersTotal = exports.getProviders = void 0;
+exports.deleteProvider = exports.createProvider = exports.updateProvider = exports.getProvidersTotal = exports.getInfoProvider = exports.getProviders = void 0;
 const providersQueries_1 = require("../helpers/providers/providersQueries");
+const db_1 = require("../utils/db");
 const getProviders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const params = req.query;
@@ -30,10 +31,29 @@ const getProviders = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getProviders = getProviders;
+const getInfoProvider = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = parseInt(req.params.id);
+        const provider = yield (0, providersQueries_1.getInfoProviderQuery)(id);
+        res.status(200).json({
+            ok: true,
+            msg: 'Ok',
+            data: provider
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            ok: false,
+            msg: 'Server error contact with the administrator'
+        });
+    }
+});
+exports.getInfoProvider = getInfoProvider;
 const getProvidersTotal = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const params = req.query;
-        let queryTotalProviders = yield (0, providersQueries_1.getTotalProviers)(Object.assign({}, params));
+        let queryTotalProviders = yield (0, providersQueries_1.getTotalProviersQuery)(Object.assign({}, params));
         res.status(200).json({
             ok: true,
             msg: 'Ok',
@@ -52,6 +72,13 @@ exports.getProvidersTotal = getProvidersTotal;
 const updateProvider = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = parseInt(req.params.id);
+        const provider = yield db_1.db.cat_proveedores.findUnique({ where: { id } });
+        if (!provider) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Record to update not found.'
+            });
+        }
         const { clabe } = req.body;
         yield (0, providersQueries_1.updateProviderQuery)({ id_provider: id, clabe });
         res.status(200).json({
@@ -89,6 +116,13 @@ exports.createProvider = createProvider;
 const deleteProvider = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = parseInt(req.params.id);
+        const provider = yield db_1.db.cat_proveedores.findUnique({ where: { id } });
+        if (!provider) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'Record to update not found.'
+            });
+        }
         yield (0, providersQueries_1.deleteProviderQuery)(id);
         res.status(200).json({
             ok: true,

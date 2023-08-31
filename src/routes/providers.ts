@@ -3,11 +3,12 @@
 */
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { createProvider, deleteProvider, getProviders, getProvidersTotal, updateProvider } from '../controllers/providers';
+import { createProvider, deleteProvider, getInfoProvider, getProviders, getProvidersTotal, updateProvider } from '../controllers/providers';
 import { validateFields } from '../middlewares/validate-fields';
 const router : Router = Router();
 
 router.get( '/', getProviders );
+router.get( '/:id', getInfoProvider );
 router.post( 
     '/',
     [
@@ -26,7 +27,6 @@ router.put(
     updateProvider 
 );
 router.delete( '/:id', deleteProvider );
+router.get( '/total/count', getProvidersTotal );
 
-
-router.get( '/total', getProvidersTotal );
 export default router;

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProviderQuery = exports.createProviderQuery = exports.updateProviderQuery = exports.getTotalProviers = exports.getProvidersQuery = void 0;
+exports.getInfoProviderQuery = exports.deleteProviderQuery = exports.createProviderQuery = exports.updateProviderQuery = exports.getTotalProviersQuery = exports.getProvidersQuery = void 0;
 const db_1 = require("../../utils/db");
 const getProvidersQuery = ({ page = '0', limit = '10', rfcFilter = '', nameFilter = '', clabeFilter = '' }) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
@@ -18,15 +18,9 @@ const getProvidersQuery = ({ page = '0', limit = '10', rfcFilter = '', nameFilte
             const min = ((parseInt(page) + 1) * rowsPerPage) - rowsPerPage;
             let listProviders = yield db_1.db.cat_proveedores.findMany({
                 where: {
-                    rfc: {
-                        contains: rfcFilter
-                    },
-                    nombre: {
-                        contains: nameFilter
-                    },
-                    clabe: {
-                        contains: clabeFilter
-                    },
+                    rfc: rfcFilter ? { contains: rfcFilter } : {},
+                    nombre: nameFilter ? { contains: nameFilter } : {},
+                    clabe: clabeFilter ? { contains: clabeFilter } : {},
                     estatus: 'Activo'
                 },
                 select: {
@@ -52,20 +46,15 @@ const getProvidersQuery = ({ page = '0', limit = '10', rfcFilter = '', nameFilte
     }));
 };
 exports.getProvidersQuery = getProvidersQuery;
-const getTotalProviers = ({ rfcFilter = '', nameFilter = '', clabeFilter = '' }) => {
+const getTotalProviersQuery = ({ rfcFilter = '', nameFilter = '', clabeFilter = '' }) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log('JEÑÑ');
         try {
             let countListProviders = yield db_1.db.cat_proveedores.count({
                 where: {
-                    rfc: {
-                        contains: rfcFilter
-                    },
-                    nombre: {
-                        contains: nameFilter
-                    },
-                    clabe: {
-                        contains: clabeFilter
-                    },
+                    rfc: rfcFilter ? { contains: rfcFilter } : {},
+                    nombre: nameFilter ? { contains: nameFilter } : {},
+                    clabe: clabeFilter ? { contains: clabeFilter } : {},
                     estatus: 'Activo'
                 },
             });
@@ -77,7 +66,7 @@ const getTotalProviers = ({ rfcFilter = '', nameFilter = '', clabeFilter = '' })
         }
     }));
 };
-exports.getTotalProviers = getTotalProviers;
+exports.getTotalProviersQuery = getTotalProviersQuery;
 const updateProviderQuery = ({ clabe, id_provider }) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
         try {
@@ -145,6 +134,7 @@ const deleteProviderQuery = (id) => {
                     estatus: 'Inactivo'
                 }
             });
+            resolve(true);
         }
         catch (err) {
             console.log(err);
@@ -153,3 +143,21 @@ const deleteProviderQuery = (id) => {
     }));
 };
 exports.deleteProviderQuery = deleteProviderQuery;
+const getInfoProviderQuery = (id) => {
+    return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const provider = yield db_1.db.cat_proveedores.findUnique({
+                where: {
+                    id
+                }
+            });
+            console.log(provider);
+            resolve(provider);
+        }
+        catch (err) {
+            console.log(err);
+            resolve({});
+        }
+    }));
+};
+exports.getInfoProviderQuery = getInfoProviderQuery;
