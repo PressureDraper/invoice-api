@@ -25,6 +25,7 @@ class Server {
         this.app.use( express.json() );
         this.app.use( cors( { origin: '*' } ) );
         this.app.use( '/api/providers', routerProviders );
+        this.app.use( '/api/orders', routerProviders );
     }
 
     execute() {
