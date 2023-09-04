@@ -1,0 +1,61 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getInfOrdersQuery = exports.getOrdersQuery = void 0;
+const db_1 = require("../../utils/db");
+const getOrdersQuery = ({ page = '0', limit = '10', groupFilter, typeFilter = '', numberFilter = '' }) => {
+    return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const rowsPerPage = parseInt(limit);
+            const min = ((parseInt(page) + 1) * rowsPerPage) - rowsPerPage;
+            let listOrders = yield db_1.db.rfn_pedidos.findMany({
+                where: {
+                    id_grupo: groupFilter ? groupFilter : {},
+                    tipo: typeFilter ? { contains: typeFilter } : {},
+                    numero: numberFilter ? { contains: numberFilter } : {}
+                },
+                orderBy: {
+                    id: 'desc'
+                },
+                skip: min,
+                take: rowsPerPage
+            });
+            listOrders ? (listOrders.forEach((elm) => {
+                elm['id'] = parseInt(elm['id'].toString());
+                elm['id_grupo'] = parseInt(elm['id_grupo'].toString());
+            })) : null;
+            resolve(listOrders);
+        }
+        catch (err) {
+            reject(err);
+        }
+    }));
+};
+exports.getOrdersQuery = getOrdersQuery;
+const getInfOrdersQuery = (id) => {
+    return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const order = yield db_1.db.rfn_pedidos.findUnique({
+                where: {
+                    id
+                }
+            });
+            order ? (order['id'] = parseInt(order['id'].toString()),
+                order['id_grupo'] = parseInt(order['id_grupo'].toString())) : null;
+            console.log(order);
+            resolve(order);
+        }
+        catch (err) {
+            reject(err);
+        }
+    }));
+};
+exports.getInfOrdersQuery = getInfOrdersQuery;

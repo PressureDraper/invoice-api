@@ -26,7 +26,7 @@ const getProviders = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         console.log(err);
         res.status(500).json({
             ok: false,
-            msg: 'Server error contact with the administrator'
+            msg: 'Server error contact the administrator'
         });
     }
 });
@@ -45,7 +45,7 @@ const getInfoProvider = (req, res) => __awaiter(void 0, void 0, void 0, function
         console.log(err);
         res.status(500).json({
             ok: false,
-            msg: 'Server error contact with the administrator'
+            msg: 'Server error contact the administrator'
         });
     }
 });
@@ -64,7 +64,7 @@ const getProvidersTotal = (req, res) => __awaiter(void 0, void 0, void 0, functi
         console.log(err);
         res.status(500).json({
             ok: false,
-            msg: 'Server error contact with the administrator'
+            msg: 'Server error contact the administrator'
         });
     }
 });
@@ -90,7 +90,7 @@ const updateProvider = (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.log(err);
         res.status(500).json({
             ok: false,
-            msg: 'Server error contact with the administrator'
+            msg: 'Server error contact the administrator'
         });
     }
 });
@@ -108,7 +108,7 @@ const createProvider = (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.log(err);
         res.status(500).json({
             ok: false,
-            msg: 'Server error contact with the administrator'
+            msg: 'Server error contact the administrator'
         });
     }
 });
@@ -133,7 +133,7 @@ const deleteProvider = (req, res) => __awaiter(void 0, void 0, void 0, function*
         console.log(err);
         res.status(500).json({
             ok: false,
-            msg: 'Server error contact with the administrator'
+            msg: 'Server error contact the administrator'
         });
     }
 });

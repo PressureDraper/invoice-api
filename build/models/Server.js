@@ -9,6 +9,7 @@ const http_1 = __importDefault(require("http"));
 const fs_1 = __importDefault(require("fs"));
 const cors_1 = __importDefault(require("cors"));
 const providers_1 = __importDefault(require("../routes/providers"));
+const orders_1 = __importDefault(require("../routes/orders"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -23,7 +24,7 @@ class Server {
         this.app.use(express_1.default.json());
         this.app.use((0, cors_1.default)({ origin: '*' }));
         this.app.use('/api/providers', providers_1.default);
-        this.app.use('/api/orders', providers_1.default);
+        this.app.use('/api/orders', orders_1.default);
     }
     execute() {
         this.middlewares();

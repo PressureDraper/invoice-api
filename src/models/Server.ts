@@ -5,6 +5,7 @@ import http from 'http';
 import fs from 'fs';
 import cors from 'cors';
 import routerProviders from '../routes/providers';
+import routerOrders from '../routes/orders';
 
 class Server {
     private app: Express;
@@ -25,7 +26,7 @@ class Server {
         this.app.use( express.json() );
         this.app.use( cors( { origin: '*' } ) );
         this.app.use( '/api/providers', routerProviders );
-        this.app.use( '/api/orders', routerProviders );
+        this.app.use( '/api/orders', routerOrders );
     }
 
     execute() {

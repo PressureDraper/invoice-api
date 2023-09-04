@@ -17,8 +17,8 @@ export const getProviders = async ( req: any, res: Response ) => {
         console.log( err );
         res.status( 500 ).json({
             ok: false,
-            msg: 'Server error contact with the administrator'
-        });        
+            msg: 'Server error contact the administrator'
+        });
     }
 }
 
@@ -36,7 +36,7 @@ export const getInfoProvider = async ( req: any, res: Response ) => {
         console.log( err );
         res.status( 500 ).json({
             ok: false,
-            msg: 'Server error contact with the administrator'
+            msg: 'Server error contact the administrator'
         });  
     }
 }
@@ -55,7 +55,7 @@ export const getProvidersTotal = async ( req: any, res: Response ) => {
         console.log( err );
         res.status( 500 ).json({
             ok: false,
-            msg: 'Server error contact with the administrator'
+            msg: 'Server error contact the administrator'
         }); 
     }
 }
@@ -83,7 +83,7 @@ export const updateProvider = async ( req: any, res: Response ) => {
         console.log( err );
         res.status( 500 ).json({
             ok: false,
-            msg: 'Server error contact with the administrator'
+            msg: 'Server error contact the administrator'
         });
     }
 }
@@ -101,7 +101,7 @@ export const createProvider = async ( req: any, res: Response ) => {
         console.log( err );
         res.status( 500 ).json({
             ok: false,
-            msg: 'Server error contact with the administrator'
+            msg: 'Server error contact the administrator'
         });
     }
 }
@@ -128,7 +128,7 @@ export const deleteProvider = async ( req: any, res: Response ) => {
         console.log( err );
         res.status( 500 ).json({
             ok: false,
-            msg: 'Server error contact with the administrator'
+            msg: 'Server error contact the administrator'
         });
     }
 }

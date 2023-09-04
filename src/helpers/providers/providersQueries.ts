@@ -151,6 +151,7 @@ export const getInfoProviderQuery = ( id: number ) => {
                     id
                 }
             });
+
             console.log( provider );
             resolve( provider );
         }
