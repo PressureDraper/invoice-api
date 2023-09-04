@@ -6,8 +6,14 @@ export interface PropsGetOrderQuery {
     numberFilter: string;
 }
 
-export interface PropsGetTotalOrders {
+export interface PropsGetTotalOrdersQuery {
     groupFilter: number;
     typeFilter: string;
     numberFilter: string;
+}
+
+export interface PropsCreateOrderQuery {
+    numero: string;
+    tipo: string;
+    id_grupo: number;
 }

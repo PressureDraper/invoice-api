@@ -38,5 +38,4 @@ export interface PropsCreateProviderQuery {
     estatus?: string | null;
     curp?: string | null;
     clabe?: string | null;
-
 }

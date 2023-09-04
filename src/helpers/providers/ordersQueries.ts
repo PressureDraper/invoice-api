@@ -1,5 +1,5 @@
 import { db } from '../../utils/db';
-import { PropsGetOrderQuery, PropsGetTotalOrders } from '../../interfaces/providers/ordersQueriesInterfaces';
+import { PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery } from '../../interfaces/providers/ordersQueriesInterfaces';
 
 export const getOrdersQuery = ({ page = '0', limit = '10', groupFilter , typeFilter = '', numberFilter = '' } : PropsGetOrderQuery ) => {
     return new Promise (async ( resolve, reject ) => {
@@ -56,7 +56,7 @@ export const getInfOrdersQuery = ( id : number) => {
     })
 }
 
-export const getTotalOrdersQuery = ({groupFilter, typeFilter = '', numberFilter = ''} : PropsGetTotalOrders) => {
+export const getTotalOrdersQuery = ({groupFilter, typeFilter = '', numberFilter = ''} : PropsGetTotalOrdersQuery) => {
     return new Promise( async (resolve, reject) => {
         try {
             let countListOrders = await db.rfn_pedidos.count({
@@ -77,4 +77,21 @@ export const getTotalOrdersQuery = ({groupFilter, typeFilter = '', numberFilter 
             reject(err);
         }
     });
+}
+
+export const createOrderQuery = ({numero = 'S/N', tipo, id_grupo} : PropsCreateOrderQuery) => {
+    return new Promise( async (resolve, reject) => {
+        try {
+            await db.rfn_pedidos.create({
+                data: {
+                    numero,
+                    tipo,
+                    id_grupo
+                }
+            });
+            resolve(true);
+        } catch (err) {
+            reject(false);
+        }
+    })
 }

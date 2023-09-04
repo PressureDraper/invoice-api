@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTotalOrdersQuery = exports.getInfOrdersQuery = exports.getOrdersQuery = void 0;
+exports.createOrderQuery = exports.getTotalOrdersQuery = exports.getInfOrdersQuery = exports.getOrdersQuery = void 0;
 const db_1 = require("../../utils/db");
 const getOrdersQuery = ({ page = '0', limit = '10', groupFilter, typeFilter = '', numberFilter = '' }) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
@@ -76,3 +76,21 @@ const getTotalOrdersQuery = ({ groupFilter, typeFilter = '', numberFilter = '' }
     }));
 };
 exports.getTotalOrdersQuery = getTotalOrdersQuery;
+const createOrderQuery = ({ numero = 'S/N', tipo, id_grupo }) => {
+    return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            yield db_1.db.rfn_pedidos.create({
+                data: {
+                    numero,
+                    tipo,
+                    id_grupo
+                }
+            });
+            resolve(true);
+        }
+        catch (err) {
+            reject(false);
+        }
+    }));
+};
+exports.createOrderQuery = createOrderQuery;
