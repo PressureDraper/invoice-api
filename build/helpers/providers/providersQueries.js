@@ -56,7 +56,7 @@ const getTotalProviersQuery = ({ rfcFilter = '', nameFilter = '', clabeFilter = 
                     nombre: nameFilter ? { contains: nameFilter } : {},
                     clabe: clabeFilter ? { contains: clabeFilter } : {},
                     estatus: 'Activo'
-                },
+                }
             });
             resolve(countListProviders);
         }

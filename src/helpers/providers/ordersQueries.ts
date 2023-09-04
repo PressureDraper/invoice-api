@@ -1,5 +1,5 @@
 import { db } from '../../utils/db';
-import { PropsGetOrderQuery } from '../../interfaces/providers/ordersQueriesInterfaces';
+import { PropsGetOrderQuery, PropsGetTotalOrders } from '../../interfaces/providers/ordersQueriesInterfaces';
 
 export const getOrdersQuery = ({ page = '0', limit = '10', groupFilter , typeFilter = '', numberFilter = '' } : PropsGetOrderQuery ) => {
     return new Promise (async ( resolve, reject ) => {
@@ -49,10 +49,32 @@ export const getInfOrdersQuery = ( id : number) => {
                 order['id_grupo'] = parseInt(order['id_grupo'].toString())
             ) : null
 
-            console.log(order);
             resolve(order);
         } catch (err) {
             reject(err);
         }
     })
+}
+
+export const getTotalOrdersQuery = ({groupFilter, typeFilter = '', numberFilter = ''} : PropsGetTotalOrders) => {
+    return new Promise( async (resolve, reject) => {
+        try {
+            let countListOrders = await db.rfn_pedidos.count({
+                where: {
+                    id_grupo: groupFilter ? groupFilter : {},
+                    tipo: typeFilter ? { contains : typeFilter } : {},
+                    numero: numberFilter ? { contains : numberFilter } : {}
+                }
+            })
+
+            countListOrders ? (
+
+                resolve( countListOrders )
+
+            ) : resolve( 0 );
+
+        } catch (err) {
+            reject(err);
+        }
+    });
 }

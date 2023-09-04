@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInfOrders = exports.getOrders = void 0;
+exports.getTotalOrders = exports.getInfOrders = exports.getOrders = void 0;
 const ordersQueries_1 = require("../helpers/providers/ordersQueries");
 const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -49,3 +49,22 @@ const getInfOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getInfOrders = getInfOrders;
+const getTotalOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const params = req.query;
+        let queryTotalOrders = yield (0, ordersQueries_1.getTotalOrdersQuery)(Object.assign({}, params));
+        res.status(200).json({
+            ok: true,
+            msg: 'ok',
+            data: queryTotalOrders
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            ok: false,
+            msg: 'Server error contact the administrator'
+        });
+    }
+});
+exports.getTotalOrders = getTotalOrders;

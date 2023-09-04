@@ -49,9 +49,9 @@ export const getTotalProviersQuery = ({ rfcFilter = '', nameFilter = '', clabeFi
                     nombre: nameFilter ? { contains: nameFilter } : {},
                     clabe: clabeFilter ? { contains: clabeFilter } : {},
                     estatus: 'Activo'
-                },
+                }
             });
-            resolve(countListProviders);
+            resolve( countListProviders );
         }
         catch (err) {
             console.log(err);

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInfOrdersQuery = exports.getOrdersQuery = void 0;
+exports.getTotalOrdersQuery = exports.getInfOrdersQuery = exports.getOrdersQuery = void 0;
 const db_1 = require("../../utils/db");
 const getOrdersQuery = ({ page = '0', limit = '10', groupFilter, typeFilter = '', numberFilter = '' }) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
@@ -50,7 +50,6 @@ const getInfOrdersQuery = (id) => {
             });
             order ? (order['id'] = parseInt(order['id'].toString()),
                 order['id_grupo'] = parseInt(order['id_grupo'].toString())) : null;
-            console.log(order);
             resolve(order);
         }
         catch (err) {
@@ -59,3 +58,21 @@ const getInfOrdersQuery = (id) => {
     }));
 };
 exports.getInfOrdersQuery = getInfOrdersQuery;
+const getTotalOrdersQuery = ({ groupFilter, typeFilter = '', numberFilter = '' }) => {
+    return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            let countListOrders = yield db_1.db.rfn_pedidos.count({
+                where: {
+                    id_grupo: groupFilter ? groupFilter : {},
+                    tipo: typeFilter ? { contains: typeFilter } : {},
+                    numero: numberFilter ? { contains: numberFilter } : {}
+                }
+            });
+            countListOrders ? (resolve(countListOrders)) : resolve(0);
+        }
+        catch (err) {
+            reject(err);
+        }
+    }));
+};
+exports.getTotalOrdersQuery = getTotalOrdersQuery;
