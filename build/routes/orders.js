@@ -14,4 +14,5 @@ router.post('/', [
     validate_fields_1.validateFields
 ], orders_1.createOrder);
 router.put('/:id', orders_1.updateOrder);
+router.delete('/:id', orders_1.deleteOrder);
 exports.default = router;

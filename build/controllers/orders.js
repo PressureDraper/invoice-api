@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateOrder = exports.createOrder = exports.getTotalOrders = exports.getInfOrders = exports.getOrders = void 0;
+exports.deleteOrder = exports.updateOrder = exports.createOrder = exports.getTotalOrders = exports.getInfOrders = exports.getOrders = void 0;
 const ordersQueries_1 = require("../helpers/providers/ordersQueries");
 const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -95,7 +95,7 @@ const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         Object.keys(data).length !== 0 ? (state ?
             res.status(200).json({
                 ok: true,
-                msg: 'Record Updated',
+                msg: 'Record deleted',
             })
             :
                 res.status(404).json({
@@ -117,3 +117,27 @@ const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.updateOrder = updateOrder;
+const deleteOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = parseInt(req.params.id);
+        const state = yield (0, ordersQueries_1.deleteOrderQuery)(id);
+        state ?
+            res.status(200).json({
+                ok: true,
+                msg: 'Record deleted',
+            })
+            :
+                res.status(404).json({
+                    ok: false,
+                    msg: 'Record to delete not found'
+                });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            ok: false,
+            msg: 'Server error contact the administrator'
+        });
+    }
+});
+exports.deleteOrder = deleteOrder;

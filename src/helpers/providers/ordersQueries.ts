@@ -1,10 +1,10 @@
 import { db } from '../../utils/db';
 import { PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery, PropsUpdateOrderQuery } from '../../interfaces/providers/ordersQueriesInterfaces';
+import moment from 'moment';
 
 export const getOrdersQuery = ({ page = '0', limit = '10', groupFilter , typeFilter = '', numberFilter = '' } : PropsGetOrderQuery ) => {
     return new Promise (async ( resolve, reject ) => {
         try {
-            
             const rowsPerPage = parseInt( limit );
             const min = ((parseInt(page) + 1) * rowsPerPage) - rowsPerPage;
     
@@ -128,6 +128,35 @@ export const updateOrderQuery = ({numero, tipo, id_grupo, order_id } : PropsUpda
 
         } catch (err) {
             reject(false);
+        }
+    })
+}
+
+export const deleteOrderQuery = (id: number) => {
+    return new Promise ( async (resolve, reject) => {
+        try {
+            const order = await db.rfn_pedidos.findUnique({
+                where: {
+                    id: id
+                }
+            });
+
+            order ? (
+                await db.rfn_pedidos.update({
+                    where: {
+                        id
+                    },
+                    data: {
+                        deleted_at: new Date().toISOString()
+                    }
+                }),
+
+                resolve(true)
+
+            ) : resolve(false);
+
+        } catch (err) {
+            reject(err);
         }
     })
 }
