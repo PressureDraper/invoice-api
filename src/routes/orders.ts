@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { createOrder, getInfOrders, getOrders, getTotalOrders } from '../controllers/orders';
+import { createOrder, getInfOrders, getOrders, getTotalOrders, updateOrder } from '../controllers/orders';
 import { validateFields } from '../middlewares/validate-fields';
 
 const router : Router = Router();
@@ -14,5 +14,7 @@ router.post( '/', [
     check('id_grupo', 'El campo id_grupo es obligatorio').not().isEmpty(),
     validateFields
 ], createOrder );
+
+router.put( '/:id', updateOrder);
 
 export default router;

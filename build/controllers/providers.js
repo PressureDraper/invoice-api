@@ -76,7 +76,7 @@ const updateProvider = (req, res) => __awaiter(void 0, void 0, void 0, function*
         if (!provider) {
             return res.status(404).json({
                 ok: false,
-                msg: 'Record to update not found.'
+                msg: 'Record to update not found'
             });
         }
         const { clabe } = req.body;

@@ -13,4 +13,5 @@ router.post('/', [
     (0, express_validator_1.check)('id_grupo', 'El campo id_grupo es obligatorio').not().isEmpty(),
     validate_fields_1.validateFields
 ], orders_1.createOrder);
+router.put('/:id', orders_1.updateOrder);
 exports.default = router;

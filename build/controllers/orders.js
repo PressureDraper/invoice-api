@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createOrder = exports.getTotalOrders = exports.getInfOrders = exports.getOrders = void 0;
+exports.updateOrder = exports.createOrder = exports.getTotalOrders = exports.getInfOrders = exports.getOrders = void 0;
 const ordersQueries_1 = require("../helpers/providers/ordersQueries");
 const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -32,7 +32,7 @@ const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getOrders = getOrders;
 const getInfOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const id = req.params.id;
+        const id = parseInt(req.params.id);
         const order = yield (0, ordersQueries_1.getInfOrdersQuery)(id);
         res.status(200).json({
             ok: true,
@@ -71,6 +71,7 @@ exports.getTotalOrders = getTotalOrders;
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = req.body;
+        console.log(data);
         yield (0, ordersQueries_1.createOrderQuery)(Object.assign({}, data));
         res.status(200).json({
             ok: true,
@@ -86,3 +87,33 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.createOrder = createOrder;
+const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = parseInt(req.params.id);
+        const data = req.body;
+        const state = yield (0, ordersQueries_1.updateOrderQuery)(Object.assign(Object.assign({}, data), { order_id: id }));
+        Object.keys(data).length !== 0 ? (state ?
+            res.status(200).json({
+                ok: true,
+                msg: 'Record Updated',
+            })
+            :
+                res.status(404).json({
+                    ok: false,
+                    msg: 'Record to update not found'
+                }))
+            :
+                res.status(400).json({
+                    ok: false,
+                    msg: 'No data to update query'
+                });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            ok: false,
+            msg: 'Server error contact the administrator'
+        });
+    }
+});
+exports.updateOrder = updateOrder;

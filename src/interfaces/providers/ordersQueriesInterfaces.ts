@@ -17,3 +17,10 @@ export interface PropsCreateOrderQuery {
     tipo: string;
     id_grupo: number;
 }
+
+export interface PropsUpdateOrderQuery {
+    numero: string;
+    tipo: string;
+    id_grupo: number;
+    order_id: number; 
+}

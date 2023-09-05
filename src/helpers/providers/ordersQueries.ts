@@ -1,5 +1,5 @@
 import { db } from '../../utils/db';
-import { PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery } from '../../interfaces/providers/ordersQueriesInterfaces';
+import { PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery, PropsUpdateOrderQuery } from '../../interfaces/providers/ordersQueriesInterfaces';
 
 export const getOrdersQuery = ({ page = '0', limit = '10', groupFilter , typeFilter = '', numberFilter = '' } : PropsGetOrderQuery ) => {
     return new Promise (async ( resolve, reject ) => {
@@ -22,10 +22,12 @@ export const getOrdersQuery = ({ page = '0', limit = '10', groupFilter , typeFil
             });
 
             listOrders ? (
+
                 listOrders.forEach((elm : any) => {
                     elm['id'] = parseInt(elm['id'].toString());
                     elm['id_grupo'] = parseInt(elm['id_grupo'].toString());
                 })
+
             ) : null
 
             resolve( listOrders );
@@ -45,8 +47,10 @@ export const getInfOrdersQuery = ( id : number) => {
             });
 
             order ? (
+
                 order['id'] = parseInt(order['id'].toString()), 
                 order['id_grupo'] = parseInt(order['id_grupo'].toString())
+
             ) : null
 
             resolve(order);
@@ -90,6 +94,38 @@ export const createOrderQuery = ({numero = 'S/N', tipo, id_grupo} : PropsCreateO
                 }
             });
             resolve(true);
+        } catch (err) {
+            reject(false);
+        }
+    })
+}
+
+export const updateOrderQuery = ({numero, tipo, id_grupo, order_id } : PropsUpdateOrderQuery) => {
+    return new Promise( async (resolve, reject) => {
+        try {
+            /* const [ numero ] = Object.keys(param); */
+            const order = await db.rfn_pedidos.findUnique({
+                where: {
+                    id: order_id
+                }
+            });
+
+            order ? (
+                await db.rfn_pedidos.update({
+                    where: {
+                        id: order_id
+                    },
+                    data: {
+                        numero,
+                        tipo,
+                        id_grupo
+                    }
+                }),
+
+                resolve(true)
+
+            ) : resolve(false);
+
         } catch (err) {
             reject(false);
         }

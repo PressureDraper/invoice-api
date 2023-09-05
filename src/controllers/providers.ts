@@ -68,7 +68,7 @@ export const updateProvider = async ( req: any, res: Response ) => {
         if( !provider ) {
             return res.status( 404 ).json({
                 ok: false,
-                msg: 'Record to update not found.'
+                msg: 'Record to update not found'
             });            
         }
 
