@@ -1,6 +1,5 @@
 import { db } from '../../utils/db';
 import { PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery, PropsUpdateOrderQuery } from '../../interfaces/providers/ordersQueriesInterfaces';
-import moment from 'moment';
 
 export const getOrdersQuery = ({ page = '0', limit = '10', groupFilter , typeFilter = '', numberFilter = '' } : PropsGetOrderQuery ) => {
     return new Promise (async ( resolve, reject ) => {
@@ -14,6 +13,9 @@ export const getOrdersQuery = ({ page = '0', limit = '10', groupFilter , typeFil
                     tipo: typeFilter ? { contains : typeFilter } : {},
                     numero: numberFilter ? { contains : numberFilter } : {}
                 },
+                include: {
+                    rfn_pedidos_detalles: true
+                },
                 orderBy: {
                     id: 'desc'
                 },
@@ -22,10 +24,15 @@ export const getOrdersQuery = ({ page = '0', limit = '10', groupFilter , typeFil
             });
 
             listOrders ? (
-
+                
                 listOrders.forEach((elm : any) => {
-                    elm['id'] = parseInt(elm['id'].toString());
-                    elm['id_grupo'] = parseInt(elm['id_grupo'].toString());
+                    elm.rfn_pedidos_detalles.length !== 0 && elm.rfn_pedidos_detalles.forEach((detail : any) => {
+                        detail['id'] = parseInt(detail['id'].toString())
+                        detail['id_clave'] = parseInt(detail['id_clave'].toString())
+                        detail['id_pedido'] = parseInt(detail['id_pedido'].toString())
+                    });
+                    elm['id'] = parseInt(elm['id'].toString())
+                    elm['id_grupo'] = parseInt(elm['id_grupo'].toString())
                 })
 
             ) : null
@@ -37,17 +44,25 @@ export const getOrdersQuery = ({ page = '0', limit = '10', groupFilter , typeFil
     });
 }
 
-export const getInfOrdersQuery = ( id : number) => {
+export const getInfOrdersQuery = ( id : number ) => {
     return new Promise ( async (resolve, reject) => {
         try {
             const order : any = await db.rfn_pedidos.findUnique({
                 where: {
                     id 
+                },
+                include: {
+                    rfn_pedidos_detalles: true
                 }
             });
 
             order ? (
 
+                order.rfn_pedidos_detalles.length !== 0 && (
+                    order.rfn_pedidos_detalles[0]['id'] = parseInt(order.rfn_pedidos_detalles[0]['id'].toString()),
+                    order.rfn_pedidos_detalles[0]['id_clave'] = parseInt(order.rfn_pedidos_detalles[0]['id_clave'].toString()),
+                    order.rfn_pedidos_detalles[0]['id_pedido'] = parseInt(order.rfn_pedidos_detalles[0]['id_pedido'].toString())
+                ),
                 order['id'] = parseInt(order['id'].toString()), 
                 order['id_grupo'] = parseInt(order['id_grupo'].toString())
 

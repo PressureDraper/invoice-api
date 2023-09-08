@@ -1,5 +1,4 @@
 import { Response } from 'express';
-import { db } from '../utils/db';
 import { PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery, PropsUpdateOrderQuery } from '../interfaces/providers/ordersQueriesInterfaces';
 import { getOrdersQuery, getInfOrdersQuery, getTotalOrdersQuery, createOrderQuery, updateOrderQuery, deleteOrderQuery } from '../helpers/providers/ordersQueries';
 
@@ -85,7 +84,7 @@ export const updateOrder = async (req: any, res: Response) => {
             state ?
                 res.status( 200 ).json({
                     ok: true,
-                    msg: 'Record deleted',
+                    msg: 'Record updated',
                 }) 
                 : 
                 res.status( 404 ).json({

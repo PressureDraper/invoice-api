@@ -95,7 +95,7 @@ const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         Object.keys(data).length !== 0 ? (state ?
             res.status(200).json({
                 ok: true,
-                msg: 'Record deleted',
+                msg: 'Record updated',
             })
             :
                 res.status(404).json({

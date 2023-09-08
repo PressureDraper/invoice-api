@@ -22,6 +22,9 @@ const getOrdersQuery = ({ page = '0', limit = '10', groupFilter, typeFilter = ''
                     tipo: typeFilter ? { contains: typeFilter } : {},
                     numero: numberFilter ? { contains: numberFilter } : {}
                 },
+                include: {
+                    rfn_pedidos_detalles: true
+                },
                 orderBy: {
                     id: 'desc'
                 },
@@ -29,6 +32,11 @@ const getOrdersQuery = ({ page = '0', limit = '10', groupFilter, typeFilter = ''
                 take: rowsPerPage
             });
             listOrders ? (listOrders.forEach((elm) => {
+                elm.rfn_pedidos_detalles.length !== 0 && elm.rfn_pedidos_detalles.forEach((detail) => {
+                    detail['id'] = parseInt(detail['id'].toString());
+                    detail['id_clave'] = parseInt(detail['id_clave'].toString());
+                    detail['id_pedido'] = parseInt(detail['id_pedido'].toString());
+                });
                 elm['id'] = parseInt(elm['id'].toString());
                 elm['id_grupo'] = parseInt(elm['id_grupo'].toString());
             })) : null;
@@ -46,9 +54,15 @@ const getInfOrdersQuery = (id) => {
             const order = yield db_1.db.rfn_pedidos.findUnique({
                 where: {
                     id
+                },
+                include: {
+                    rfn_pedidos_detalles: true
                 }
             });
-            order ? (order['id'] = parseInt(order['id'].toString()),
+            order ? (order.rfn_pedidos_detalles.length !== 0 && (order.rfn_pedidos_detalles[0]['id'] = parseInt(order.rfn_pedidos_detalles[0]['id'].toString()),
+                order.rfn_pedidos_detalles[0]['id_clave'] = parseInt(order.rfn_pedidos_detalles[0]['id_clave'].toString()),
+                order.rfn_pedidos_detalles[0]['id_pedido'] = parseInt(order.rfn_pedidos_detalles[0]['id_pedido'].toString())),
+                order['id'] = parseInt(order['id'].toString()),
                 order['id_grupo'] = parseInt(order['id_grupo'].toString())) : null;
             resolve(order);
         }

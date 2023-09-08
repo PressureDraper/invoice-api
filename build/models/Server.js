@@ -24,7 +24,7 @@ class Server {
         this.app.use(express_1.default.json());
         this.app.use((0, cors_1.default)({ origin: '*' }));
         this.app.use('/api/providers', providers_1.default);
-        this.app.use('/api/orders', orders_1.default);
+        this.app.use('/api/orders/', orders_1.default);
     }
     execute() {
         this.middlewares();
