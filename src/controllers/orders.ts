@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import { PropsCreateOrderDetailQuery, PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery, PropsUpdateOrderQuery } from '../interfaces/providers/ordersQueriesInterfaces';
-import { getOrdersQuery, getInfOrdersQuery, getTotalOrdersQuery, createOrderQuery, updateOrderQuery, deleteOrderQuery, createOrderDetailQuery } from '../helpers/providers/ordersQueries';
+import { PropsCreateOrderDetailQuery, PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery, PropsUpdateOrderQuery, PropsUpdateOrderDetailQuery } from '../interfaces/providers/ordersQueriesInterfaces';
+import { getOrdersQuery, getInfOrdersQuery, getTotalOrdersQuery, createOrderQuery, updateOrderQuery, deleteOrderQuery, createOrderDetailQuery, updateOrderDetailQuery, deleteOrderDetailQuery } from '../helpers/providers/ordersQueries';
 
 export const getOrders = async (req: any, res: Response) => {
     try {
@@ -131,10 +131,67 @@ export const updateOrder = async (req: any, res: Response) => {
     }
 }
 
+export const updateOrderDetail = async(req : any, res : Response) => {
+    try {
+        const id : number = parseInt( req.params.id );
+        const data : PropsUpdateOrderDetailQuery = req.body;
+        const state = await updateOrderDetailQuery({ ...data, detail_id: id});
+
+        Object.keys(data).length !== 0 ? (
+            state ?
+                res.status( 200 ).json({
+                    ok: true,
+                    msg: 'Record updated',
+                }) 
+                : 
+                res.status( 404 ).json({
+                    ok: false,
+                    msg: 'Record to update not found'
+                })
+        )
+        :
+        res.status( 400 ).json({
+            ok: false,
+            msg: 'No data to update query'
+        })
+    } catch (err) {
+        console.log( err );
+        res.status( 500 ).json({
+            ok: false,
+            msg: 'Server error contact the administrator'
+        });
+    }
+}
+
 export const deleteOrder = async(req: any, res: Response) => {
     try {
         const id: number = parseInt( req.params.id );
         const state = await deleteOrderQuery(id);
+
+        state ?
+            res.status( 200 ).json({
+                ok: true,
+                msg: 'Record deleted',
+            }) 
+            : 
+            res.status( 404 ).json({
+                ok: false,
+                msg: 'Record to delete not found'
+            })
+
+    } catch (err) {
+        console.log( err );
+        res.status( 500 ).json({
+            ok: false,
+            msg: 'Server error contact the administrator'
+        });
+    }
+}
+
+export const deleteOrderDetail = async(req: any, res: Response) => {
+    try {
+        const id : number = parseInt( req.params.id );
+        const state = await deleteOrderDetailQuery(id);
 
         state ?
             res.status( 200 ).json({

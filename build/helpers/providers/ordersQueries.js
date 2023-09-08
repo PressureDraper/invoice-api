@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrderQuery = exports.updateOrderQuery = exports.createOrderDetailQuery = exports.createOrderQuery = exports.getTotalOrdersQuery = exports.getInfOrdersQuery = exports.getOrdersQuery = void 0;
+exports.deleteOrderDetailQuery = exports.deleteOrderQuery = exports.updateOrderDetailQuery = exports.updateOrderQuery = exports.createOrderDetailQuery = exports.createOrderQuery = exports.getTotalOrdersQuery = exports.getInfOrdersQuery = exports.getOrdersQuery = void 0;
 const db_1 = require("../../utils/db");
 const getOrdersQuery = ({ page = '0', limit = '10', groupFilter, typeFilter = '', numberFilter = '' }) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
@@ -59,9 +59,11 @@ const getInfOrdersQuery = (id) => {
                     rfn_pedidos_detalles: true
                 }
             });
-            order ? (order.rfn_pedidos_detalles.length !== 0 && (order.rfn_pedidos_detalles[0]['id'] = parseInt(order.rfn_pedidos_detalles[0]['id'].toString()),
-                order.rfn_pedidos_detalles[0]['id_clave'] = parseInt(order.rfn_pedidos_detalles[0]['id_clave'].toString()),
-                order.rfn_pedidos_detalles[0]['id_pedido'] = parseInt(order.rfn_pedidos_detalles[0]['id_pedido'].toString())),
+            order ? (order.rfn_pedidos_detalles.length !== 0 && (order.rfn_pedidos_detalles.forEach((detail) => {
+                detail['id'] = parseInt(detail['id'].toString());
+                detail['id_clave'] = parseInt(detail['id_clave'].toString());
+                detail['id_pedido'] = parseInt(detail['id_pedido'].toString());
+            })),
                 order['id'] = parseInt(order['id'].toString()),
                 order['id_grupo'] = parseInt(order['id_grupo'].toString())) : null;
             resolve(order);
@@ -134,7 +136,6 @@ exports.createOrderDetailQuery = createOrderDetailQuery;
 const updateOrderQuery = ({ numero, tipo, id_grupo, order_id }) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            /* const [ numero ] = Object.keys(param); */
             const order = yield db_1.db.rfn_pedidos.findUnique({
                 where: {
                     id: order_id
@@ -158,6 +159,32 @@ const updateOrderQuery = ({ numero, tipo, id_grupo, order_id }) => {
     }));
 };
 exports.updateOrderQuery = updateOrderQuery;
+const updateOrderDetailQuery = ({ importe, id_clave, id_pedido, detail_id }) => {
+    return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const order = yield db_1.db.rfn_pedidos_detalles.findUnique({
+                where: {
+                    id: detail_id
+                }
+            });
+            order ? (yield db_1.db.rfn_pedidos_detalles.update({
+                where: {
+                    id: detail_id
+                },
+                data: {
+                    importe,
+                    id_clave,
+                    id_pedido
+                }
+            }),
+                resolve(true)) : resolve(false);
+        }
+        catch (err) {
+            reject(err);
+        }
+    }));
+};
+exports.updateOrderDetailQuery = updateOrderDetailQuery;
 const deleteOrderQuery = (id) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
         try {
@@ -182,3 +209,27 @@ const deleteOrderQuery = (id) => {
     }));
 };
 exports.deleteOrderQuery = deleteOrderQuery;
+const deleteOrderDetailQuery = (id) => {
+    return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const order = yield db_1.db.rfn_pedidos_detalles.findUnique({
+                where: {
+                    id: id
+                }
+            });
+            order ? (yield db_1.db.rfn_pedidos_detalles.update({
+                where: {
+                    id
+                },
+                data: {
+                    deleted_at: new Date().toISOString()
+                }
+            }),
+                resolve(true)) : resolve(false);
+        }
+        catch (err) {
+            reject(err);
+        }
+    }));
+};
+exports.deleteOrderDetailQuery = deleteOrderDetailQuery;

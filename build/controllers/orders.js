@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrder = exports.updateOrder = exports.createOrderDetail = exports.createOrder = exports.getTotalOrders = exports.getInfOrders = exports.getOrders = void 0;
+exports.deleteOrderDetail = exports.deleteOrder = exports.updateOrderDetail = exports.updateOrder = exports.createOrderDetail = exports.createOrder = exports.getTotalOrders = exports.getInfOrders = exports.getOrders = void 0;
 const ordersQueries_1 = require("../helpers/providers/ordersQueries");
 const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -141,6 +141,36 @@ const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.updateOrder = updateOrder;
+const updateOrderDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = parseInt(req.params.id);
+        const data = req.body;
+        const state = yield (0, ordersQueries_1.updateOrderDetailQuery)(Object.assign(Object.assign({}, data), { detail_id: id }));
+        Object.keys(data).length !== 0 ? (state ?
+            res.status(200).json({
+                ok: true,
+                msg: 'Record updated',
+            })
+            :
+                res.status(404).json({
+                    ok: false,
+                    msg: 'Record to update not found'
+                }))
+            :
+                res.status(400).json({
+                    ok: false,
+                    msg: 'No data to update query'
+                });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            ok: false,
+            msg: 'Server error contact the administrator'
+        });
+    }
+});
+exports.updateOrderDetail = updateOrderDetail;
 const deleteOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = parseInt(req.params.id);
@@ -165,3 +195,27 @@ const deleteOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.deleteOrder = deleteOrder;
+const deleteOrderDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const id = parseInt(req.params.id);
+        const state = yield (0, ordersQueries_1.deleteOrderDetailQuery)(id);
+        state ?
+            res.status(200).json({
+                ok: true,
+                msg: 'Record deleted',
+            })
+            :
+                res.status(404).json({
+                    ok: false,
+                    msg: 'Record to delete not found'
+                });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            ok: false,
+            msg: 'Server error contact the administrator'
+        });
+    }
+});
+exports.deleteOrderDetail = deleteOrderDetail;

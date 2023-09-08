@@ -1,5 +1,5 @@
 import { db } from '../../utils/db';
-import { PropsCreateOrderDetailQuery, PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery, PropsUpdateOrderQuery } from '../../interfaces/providers/ordersQueriesInterfaces';
+import { PropsCreateOrderDetailQuery, PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery, PropsUpdateOrderDetailQuery, PropsUpdateOrderQuery } from '../../interfaces/providers/ordersQueriesInterfaces';
 
 export const getOrdersQuery = ({ page = '0', limit = '10', groupFilter , typeFilter = '', numberFilter = '' } : PropsGetOrderQuery ) => {
     return new Promise (async ( resolve, reject ) => {
@@ -58,11 +58,11 @@ export const getInfOrdersQuery = ( id : number ) => {
 
             order ? (
 
-                order.rfn_pedidos_detalles.length !== 0 && (
-                    order.rfn_pedidos_detalles[0]['id'] = parseInt(order.rfn_pedidos_detalles[0]['id'].toString()),
-                    order.rfn_pedidos_detalles[0]['id_clave'] = parseInt(order.rfn_pedidos_detalles[0]['id_clave'].toString()),
-                    order.rfn_pedidos_detalles[0]['id_pedido'] = parseInt(order.rfn_pedidos_detalles[0]['id_pedido'].toString())
-                ),
+                order.rfn_pedidos_detalles.length !== 0 && (order.rfn_pedidos_detalles.forEach((detail : any) => {
+                    detail['id'] = parseInt(detail['id'].toString())
+                    detail['id_clave'] = parseInt(detail['id_clave'].toString())
+                    detail['id_pedido'] = parseInt(detail['id_pedido'].toString())
+                })),
                 order['id'] = parseInt(order['id'].toString()), 
                 order['id_grupo'] = parseInt(order['id_grupo'].toString())
 
@@ -135,7 +135,7 @@ export const createOrderDetailQuery = ({importe, id_clave, id_pedido} : PropsCre
                 }),
 
                 resolve(true)
-                
+
             ) : resolve(false);
 
         } catch (err) {
@@ -149,7 +149,6 @@ export const createOrderDetailQuery = ({importe, id_clave, id_pedido} : PropsCre
 export const updateOrderQuery = ({numero, tipo, id_grupo, order_id } : PropsUpdateOrderQuery) => {
     return new Promise( async (resolve, reject) => {
         try {
-            /* const [ numero ] = Object.keys(param); */
             const order = await db.rfn_pedidos.findUnique({
                 where: {
                     id: order_id
@@ -178,6 +177,37 @@ export const updateOrderQuery = ({numero, tipo, id_grupo, order_id } : PropsUpda
     })
 }
 
+export const updateOrderDetailQuery = ({importe, id_clave, id_pedido, detail_id} : PropsUpdateOrderDetailQuery) => {
+    return new Promise( async (resolve, reject) => {
+        try {
+            const order = await db.rfn_pedidos_detalles.findUnique({
+                where: {
+                    id: detail_id
+                }
+            });
+
+            order ? (
+                await db.rfn_pedidos_detalles.update({
+                    where: {
+                        id: detail_id
+                    },
+                    data: {
+                        importe,
+                        id_clave,
+                        id_pedido
+                    }
+                }),
+
+                resolve(true)
+
+            ) : resolve(false);
+
+        } catch (err) {
+            reject(err);
+        }
+    })
+}
+
 export const deleteOrderQuery = (id: number) => {
     return new Promise ( async (resolve, reject) => {
         try {
@@ -189,6 +219,35 @@ export const deleteOrderQuery = (id: number) => {
 
             order ? (
                 await db.rfn_pedidos.update({
+                    where: {
+                        id
+                    },
+                    data: {
+                        deleted_at: new Date().toISOString()
+                    }
+                }),
+
+                resolve(true)
+
+            ) : resolve(false);
+
+        } catch (err) {
+            reject(err);
+        }
+    })
+}
+
+export const deleteOrderDetailQuery = (id : number) => {
+    return new Promise ( async (resolve, reject) => {
+        try {
+            const order = await db.rfn_pedidos_detalles.findUnique({
+                where: {
+                    id: id
+                }
+            });
+
+            order ? (
+                await db.rfn_pedidos_detalles.update({
                     where: {
                         id
                     },

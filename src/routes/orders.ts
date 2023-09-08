@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { check } from 'express-validator';
-import { createOrder, createOrderDetail, deleteOrder, getInfOrders, getOrders, getTotalOrders, updateOrder } from '../controllers/orders';
+import { createOrder, createOrderDetail, deleteOrder, deleteOrderDetail, getInfOrders, getOrders, getTotalOrders, updateOrder, updateOrderDetail } from '../controllers/orders';
 import { validateFields } from '../middlewares/validate-fields';
 
 const router : Router = Router();
@@ -15,7 +15,7 @@ router.post( '/', [
     validateFields
 ], createOrder );
 
-router.post( '/detail', [
+router.post( '/details', [
     check('importe', 'El campo importe es obligatorio').not().isEmpty(),
     check('id_clave', 'El campo id_clave es obligatorio').not().isEmpty(),
     check('id_pedido', 'El campo id_pedido es obligatorio').not().isEmpty(),
@@ -23,7 +23,10 @@ router.post( '/detail', [
 ], createOrderDetail)
 
 router.put( '/:id', updateOrder);
+router.put( '/details/:id', updateOrderDetail);
 
 router.delete( '/:id', deleteOrder );
+router.delete( '/details/:id', deleteOrderDetail);
+
 
 export default router;
