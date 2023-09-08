@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrderQuery = exports.updateOrderQuery = exports.createOrderQuery = exports.getTotalOrdersQuery = exports.getInfOrdersQuery = exports.getOrdersQuery = void 0;
+exports.deleteOrderQuery = exports.updateOrderQuery = exports.createOrderDetailQuery = exports.createOrderQuery = exports.getTotalOrdersQuery = exports.getInfOrdersQuery = exports.getOrdersQuery = void 0;
 const db_1 = require("../../utils/db");
 const getOrdersQuery = ({ page = '0', limit = '10', groupFilter, typeFilter = '', numberFilter = '' }) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
@@ -108,6 +108,29 @@ const createOrderQuery = ({ numero = 'S/N', tipo, id_grupo }) => {
     }));
 };
 exports.createOrderQuery = createOrderQuery;
+const createOrderDetailQuery = ({ importe, id_clave, id_pedido }) => {
+    return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const order = yield db_1.db.rfn_pedidos.findUnique({
+                where: {
+                    id: id_pedido
+                }
+            });
+            order ? (yield db_1.db.rfn_pedidos_detalles.create({
+                data: {
+                    importe,
+                    id_clave,
+                    id_pedido
+                }
+            }),
+                resolve(true)) : resolve(false);
+        }
+        catch (err) {
+            reject(err);
+        }
+    }));
+};
+exports.createOrderDetailQuery = createOrderDetailQuery;
 const updateOrderQuery = ({ numero, tipo, id_grupo, order_id }) => {
     return new Promise((resolve, reject) => __awaiter(void 0, void 0, void 0, function* () {
         try {

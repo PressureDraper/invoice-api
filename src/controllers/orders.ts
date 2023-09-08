@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import { PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery, PropsUpdateOrderQuery } from '../interfaces/providers/ordersQueriesInterfaces';
-import { getOrdersQuery, getInfOrdersQuery, getTotalOrdersQuery, createOrderQuery, updateOrderQuery, deleteOrderQuery } from '../helpers/providers/ordersQueries';
+import { PropsCreateOrderDetailQuery, PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery, PropsUpdateOrderQuery } from '../interfaces/providers/ordersQueriesInterfaces';
+import { getOrdersQuery, getInfOrdersQuery, getTotalOrdersQuery, createOrderQuery, updateOrderQuery, deleteOrderQuery, createOrderDetailQuery } from '../helpers/providers/ordersQueries';
 
 export const getOrders = async (req: any, res: Response) => {
     try {
@@ -59,12 +59,36 @@ export const getTotalOrders = async (req : any, res : Response) => {
 export const createOrder = async (req : any, res : Response) => {
     try {
         const data : PropsCreateOrderQuery = req.body;
-        console.log(data);
         await createOrderQuery( { ...data } );
         res.status( 200 ).json({
             ok: true,
             msg: 'Record Created',
         });
+    } catch (err) {
+        console.log( err );
+        res.status( 500 ).json({
+            ok: false,
+            msg: 'Server error contact the administrator'
+        });
+    }
+}
+
+export const createOrderDetail = async (req : any, res: Response) => {
+    try {
+        const data : PropsCreateOrderDetailQuery = req.body;
+        const { id_pedido } : PropsCreateOrderDetailQuery = req.body;
+        const state = await createOrderDetailQuery( {...data} )
+
+        state ?
+            res.status( 200 ).json({
+                ok: true,
+                msg: 'Record Created',
+            })
+            :
+            res.status( 404 ).json({
+                ok: false,
+                msg: `Order ${id_pedido} not found to create a detail`,
+            })
     } catch (err) {
         console.log( err );
         res.status( 500 ).json({

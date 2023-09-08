@@ -1,5 +1,5 @@
 import { db } from '../../utils/db';
-import { PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery, PropsUpdateOrderQuery } from '../../interfaces/providers/ordersQueriesInterfaces';
+import { PropsCreateOrderDetailQuery, PropsCreateOrderQuery, PropsGetOrderQuery, PropsGetTotalOrdersQuery, PropsUpdateOrderQuery } from '../../interfaces/providers/ordersQueriesInterfaces';
 
 export const getOrdersQuery = ({ page = '0', limit = '10', groupFilter , typeFilter = '', numberFilter = '' } : PropsGetOrderQuery ) => {
     return new Promise (async ( resolve, reject ) => {
@@ -114,6 +114,37 @@ export const createOrderQuery = ({numero = 'S/N', tipo, id_grupo} : PropsCreateO
         }
     })
 }
+
+export const createOrderDetailQuery = ({importe, id_clave, id_pedido} : PropsCreateOrderDetailQuery) => {
+    return new Promise( async (resolve, reject) => {
+        try {
+            const order : any = await db.rfn_pedidos.findUnique({
+                where: {
+                    id: id_pedido
+                }
+            });
+            
+            order ? (
+                
+                await db.rfn_pedidos_detalles.create({
+                    data: {
+                        importe,
+                        id_clave,
+                        id_pedido
+                    }
+                }),
+
+                resolve(true)
+                
+            ) : resolve(false);
+
+        } catch (err) {
+            reject(err);
+        }
+    })
+}
+
+
 
 export const updateOrderQuery = ({numero, tipo, id_grupo, order_id } : PropsUpdateOrderQuery) => {
     return new Promise( async (resolve, reject) => {

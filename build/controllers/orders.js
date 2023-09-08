@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrder = exports.updateOrder = exports.createOrder = exports.getTotalOrders = exports.getInfOrders = exports.getOrders = void 0;
+exports.deleteOrder = exports.updateOrder = exports.createOrderDetail = exports.createOrder = exports.getTotalOrders = exports.getInfOrders = exports.getOrders = void 0;
 const ordersQueries_1 = require("../helpers/providers/ordersQueries");
 const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -71,7 +71,6 @@ exports.getTotalOrders = getTotalOrders;
 const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = req.body;
-        console.log(data);
         yield (0, ordersQueries_1.createOrderQuery)(Object.assign({}, data));
         res.status(200).json({
             ok: true,
@@ -87,6 +86,31 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.createOrder = createOrder;
+const createOrderDetail = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const data = req.body;
+        const { id_pedido } = req.body;
+        const state = yield (0, ordersQueries_1.createOrderDetailQuery)(Object.assign({}, data));
+        state ?
+            res.status(200).json({
+                ok: true,
+                msg: 'Record Created',
+            })
+            :
+                res.status(404).json({
+                    ok: false,
+                    msg: `Order ${id_pedido} not found to create a detail`,
+                });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({
+            ok: false,
+            msg: 'Server error contact the administrator'
+        });
+    }
+});
+exports.createOrderDetail = createOrderDetail;
 const updateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const id = parseInt(req.params.id);
